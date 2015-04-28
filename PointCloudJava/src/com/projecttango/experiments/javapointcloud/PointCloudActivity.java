@@ -295,28 +295,17 @@ public class PointCloudActivity extends Activity implements OnClickListener {
                     mPointCloudFrameDelta = (mCurrentTimeStamp - mXyIjPreviousTimeStamp)
                             * SECS_TO_MILLISECS;
                     mXyIjPreviousTimeStamp = mCurrentTimeStamp;
-                    mPointCount = xyzIj.xyzCount;
-                    byte[] buffer = new byte[xyzIj.xyzCount * 3 * 4];
-                    // TODO: Use getXYZBuffer() call instead of parcel file directly.
-                    FileInputStream fileStream = new FileInputStream(xyzIj.xyzParcelFileDescriptor
-                            .getFileDescriptor());
-                    try {
-                        fileStream.read(buffer, xyzIj.xyzParcelFileDescriptorOffset, buffer.length);
-                        fileStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     try {
                         TangoPoseData pointCloudPose = mTango.getPoseAtTime(mCurrentTimeStamp,
-                                framePairs.get(0));
-
-                        mRenderer.getPointCloud().UpdatePoints(buffer, xyzIj.xyzCount);
+                             framePairs.get(0));
+                        mPointCount = xyzIj.xyzCount;
+                        mRenderer.getPointCloud().UpdatePoints(xyzIj.xyz);
                         mRenderer.getModelMatCalculator().updatePointCloudModelMatrix(
-                                pointCloudPose.getTranslationAsFloats(),
-                                pointCloudPose.getRotationAsFloats());
+                                        pointCloudPose.getTranslationAsFloats(),
+                                        pointCloudPose.getRotationAsFloats());
                         mRenderer.getPointCloud().setModelMatrix(
                                 mRenderer.getModelMatCalculator().getPointCloudModelMatrixCopy());
-                    } catch (TangoErrorException e) {
+                      } catch (TangoErrorException e) {
                         Toast.makeText(getApplicationContext(), R.string.TangoError,
                                 Toast.LENGTH_SHORT).show();
                     } catch (TangoInvalidException e) {
