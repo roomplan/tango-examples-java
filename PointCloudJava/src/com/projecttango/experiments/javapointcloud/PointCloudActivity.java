@@ -279,6 +279,9 @@ public class PointCloudActivity extends Activity implements OnClickListener {
                     }
                     count++;
                     mPreviousPoseStatus = pose.statusCode;
+                    if(!mRenderer.isValid()){
+                        return;
+                    }
                     mRenderer.getModelMatCalculator().updateModelMatrix(
                             pose.getTranslationAsFloats(), pose.getRotationAsFloats());
                     mRenderer.updateViewMatrix();
@@ -299,6 +302,9 @@ public class PointCloudActivity extends Activity implements OnClickListener {
                         TangoPoseData pointCloudPose = mTango.getPoseAtTime(mCurrentTimeStamp,
                              framePairs.get(0));
                         mPointCount = xyzIj.xyzCount;
+                        if(!mRenderer.isValid()){
+                            return;
+                        }
                         mRenderer.getPointCloud().UpdatePoints(xyzIj.xyz);
                         mRenderer.getModelMatCalculator().updatePointCloudModelMatrix(
                                         pointCloudPose.getTranslationAsFloats(),
