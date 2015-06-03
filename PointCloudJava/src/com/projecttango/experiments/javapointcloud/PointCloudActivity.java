@@ -401,4 +401,13 @@ public class PointCloudActivity extends Activity implements OnClickListener {
             }
         }).start();
     }
+    public void onPCLBtnClicked(View v){
+        if(v.getId() == R.id.pclButton){
+            GreetingsFromPCL();
+        }
+    }
+    static {
+		System.loadLibrary("pcl_lib");
+	}
+    public native int GreetingsFromPCL();
 }
