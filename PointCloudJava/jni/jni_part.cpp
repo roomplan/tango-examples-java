@@ -28,7 +28,7 @@
 
 #include <pcl/filters/statistical_outlier_removal.h>
 
-#include "../jni/header.h"
+//#include "../jni/header.h"
 
 //#include <boost/shared_ptr.hpp>
 //#include <pcl/kdtree/kdtree_flann.h>
