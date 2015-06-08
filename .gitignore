@@ -21,5 +21,4 @@ proguard/
 *.o
 *.so
 *.o.d
-*.cproject
 *.orig
