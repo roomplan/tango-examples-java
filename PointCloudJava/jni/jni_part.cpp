@@ -42,10 +42,10 @@ extern "C" {
 
 JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer);
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(jstring filename);
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env,jstring filename);
 
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(jstring filename){
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env,jstring filename){
 
  return 0;
 

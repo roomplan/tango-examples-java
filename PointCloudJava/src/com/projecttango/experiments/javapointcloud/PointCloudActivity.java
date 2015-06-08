@@ -114,7 +114,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 	// flag is set, if user wants to record a pointcloud
 	private boolean mTimeToTakePointCloud = false;
 	// number of poses
-	private int mNumPoseCount;
+	private int mNumPoseCount=0;
 
 	private Semaphore mutex_on_mIsRecording;
 	private String mLastPointCloudFilename;
