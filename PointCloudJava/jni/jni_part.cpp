@@ -106,13 +106,15 @@ void GetJStringContent(JNIEnv *AEnv, jstring AStr, std::string &ARes) {
 	AEnv->ReleaseStringUTFChars(AStr, s);
 }
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env,jstring filename){
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env, jstring filename){
 
 
 	//Read the cloud from file
 	std::string str;
 	GetJStringContent(env, filename, str);
 	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>());
+
+
 	pcl::PCDReader reader;
 	reader.read(str, *cloud);
 
