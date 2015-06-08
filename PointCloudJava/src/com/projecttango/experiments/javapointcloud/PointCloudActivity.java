@@ -169,6 +169,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 		mIsTangoServiceConnected = false;
 		startUIThread();
 		
+		createSavingDirectory();		
 		mutex_on_mIsRecording = new Semaphore(1, true);
 	}
 
