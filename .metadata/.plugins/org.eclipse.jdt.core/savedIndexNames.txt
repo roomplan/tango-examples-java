@@ -1,0 +1,14 @@
+INDEX VERSION 1.127+E:\Windows7Test\tango-examples-java\.metadata\.plugins\org.eclipse.jdt.core
+2206901923.index
+727852930.index
+3287987013.index
+1337937236.index
+1062873963.index
+1020824225.index
+3397730898.index
+2956777181.index
+12705077.index
+4025880123.index
+2553871408.index
+747350388.index
+1711444832.index
