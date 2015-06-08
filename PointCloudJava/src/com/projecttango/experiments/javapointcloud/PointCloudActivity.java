@@ -114,7 +114,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 	// flag is set, if user wants to record a pointcloud
 	private boolean mTimeToTakePointCloud = false;
 	// number of poses
-	private int mNumPoseCount;
+	private int mNumPoseCount=0;
 
 	private Semaphore mutex_on_mIsRecording;
 	private String mLastPointCloudFilename;
@@ -424,8 +424,9 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 			protected void onPostExecute(Boolean done) {
 				
 				if (done) {
-					int numberPlanes = getCountPlanesByPCL(mLastPointCloudFilename);
-					Log.d("Test", "MeinTest");
+					Log.d("Test", SaveDir + mLastPointCloudFilename);
+					int numberPlanes = getCountPlanesByPCL(SaveDir + mLastPointCloudFilename);
+					
 					String result=getResources().getString(R.string.found_planes)+Integer.toString(numberPlanes);
 
 					Toast.makeText(getApplicationContext(), result,

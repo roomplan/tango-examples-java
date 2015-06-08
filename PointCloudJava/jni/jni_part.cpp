@@ -92,6 +92,7 @@ extern "C" {
 
 JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer);
+
 JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(
 		JNIEnv* env, jstring filename);
 
@@ -124,7 +125,6 @@ JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointClo
 	//extract planar planar clusters
 	vector<vector<int> >clusters;
 	findClusters(cloud,clusters);
-
 
 	return clusters.size();
 
