@@ -40,10 +40,17 @@ namespace pc = pcl::console;
 //
 extern "C" {
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_GreetingsFromPCL(
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer);
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(jstring filename);
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_GreetingsFromPCL(
+
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(jstring filename){
+
+ return 0;
+
+}
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer) {
 	jbyte *dBuf = (signed char*) env->GetDirectBufferAddress(pcBuffer);
 	signed char e = dBuf[0];
@@ -65,5 +72,6 @@ JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointClo
 		cloud->points[i].y = 1024 * rand() / (RAND_MAX + 1.0f);
 		cloud->points[i].z = 1024 * rand() / (RAND_MAX + 1.0f);
 	}
+	return 10;
 }
 }
