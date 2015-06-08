@@ -28,7 +28,7 @@
 
 #include <pcl/filters/statistical_outlier_removal.h>
 
-//#include "../jni/header.h"
+#include "../jni/header.h"
 
 //#include <boost/shared_ptr.hpp>
 //#include <pcl/kdtree/kdtree_flann.h>
@@ -40,10 +40,10 @@ namespace pc = pcl::console;
 //
 extern "C" {
 
-JNIEXPORT jint JNICALL Java_com_projecttango.experiments.javapointcloud_PointCloudActivity_GreetingsFromPCL(
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_GreetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer);
 
-JNIEXPORT jint JNICALL Java_com_projecttango.experiments.javapointcloud_PointCloudActivity_GreetingsFromPCL(
+JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_GreetingsFromPCL(
 		JNIEnv* env, jobject pcBuffer) {
 	jbyte *dBuf = (signed char*) env->GetDirectBufferAddress(pcBuffer);
 	signed char e = dBuf[0];
