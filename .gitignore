@@ -18,10 +18,8 @@ proguard/
 # Log Files
 *.log
 *.mk
-*.porperties
 *.o
 *.so
 *.o.d
-*.project
 *.cproject
 *.orig
