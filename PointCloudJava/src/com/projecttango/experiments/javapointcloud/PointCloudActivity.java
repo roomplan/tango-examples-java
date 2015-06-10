@@ -424,7 +424,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 			protected void onPostExecute(Boolean done) {
 				
 				if (done) {
-					int numberPlanes = getCountPlanesByPCL(mLastPointCloudFilename);
+					int numberPlanes = getCountPlanesByPCL(SaveDir+mLastPointCloudFilename);
 					String result=getResources().getString(R.string.found_planes)+Integer.toString(numberPlanes);
 					Toast.makeText(getApplicationContext(), result,
 							Toast.LENGTH_SHORT).show();
