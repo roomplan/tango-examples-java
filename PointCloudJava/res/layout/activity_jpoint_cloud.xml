@@ -252,4 +252,12 @@
         android:src="@drawable/pcl"
         android:onClick="onPCLBtnClicked" />
 
+    <ImageView
+        android:id="@+id/roomplanImageView"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/roomplan" />
+
 </RelativeLayout>

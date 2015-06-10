@@ -47,6 +47,6 @@
     <string name="pose_unknown">"unknown"</string>
     <string name="latest_adf_is">", Latest ADF is: "</string>
     <string name="failed_to_save">Error: Data could not be saved</string>
-    <string name="found_planes">PCL Clusterextraction found: </string>
+    <string name="found_cluster">PCL Clusterextraction found: </string>
 
 </resources>

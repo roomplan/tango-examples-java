@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.projecttango.experiments.javapointcloud;
+package com.tangoproject.experiments.javapointcloud;
 
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.Tango.OnTangoUpdateListener;
@@ -27,10 +27,12 @@ import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -168,6 +171,16 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 		mTangoServiceVersionTextView.setText(mServiceVersion);
 		mIsTangoServiceConnected = false;
 		startUIThread();
+		
+		ImageView rImg = (ImageView) findViewById(R.id.roomplanImageView);
+		rImg.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(Intent.ACTION_VIEW, 
+					     Uri.parse("http://www.roomplan.de/getting-started-pcl-android/"));
+					startActivity(intent);
+		    }
+		});
 		
 		createSavingDirectory();		
 		mutex_on_mIsRecording = new Semaphore(1, true);
@@ -424,14 +437,11 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 			protected void onPostExecute(Boolean done) {
 				
 				if (done) {
-<<<<<<< HEAD
+
 					int numberPlanes = getCountPlanesByPCL(SaveDir+mLastPointCloudFilename);
-=======
 					Log.d("Test", SaveDir + mLastPointCloudFilename);
-					int numberPlanes = getCountPlanesByPCL(SaveDir + mLastPointCloudFilename);
-					
->>>>>>> 397d8d0341b3b2af725a145326be4493a76173b4
-					String result=getResources().getString(R.string.found_planes)+Integer.toString(numberPlanes);
+				
+					String result=getResources().getString(R.string.found_cluster)+" "+Integer.toString(numberPlanes)+" cluster";
 
 					Toast.makeText(getApplicationContext(), result,
 							Toast.LENGTH_SHORT).show();

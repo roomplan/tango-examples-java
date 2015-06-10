@@ -90,10 +90,10 @@ int findClusters(pcl::PointCloud<PointT>::Ptr cloud, std::vector <vector<int> > 
 
 extern "C" {
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject, jobject pcBuffer);
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(
 		JNIEnv* env,jobject, jstring filename);
 
 void GetJStringContent(JNIEnv *AEnv, jstring AStr, std::string &ARes) {
@@ -107,7 +107,7 @@ void GetJStringContent(JNIEnv *AEnv, jstring AStr, std::string &ARes) {
 	AEnv->ReleaseStringUTFChars(AStr, s);
 }
 
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env,jobject, jstring filename){
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(JNIEnv* env,jobject, jstring filename){
 
 
 	//Read the cloud from file
@@ -129,7 +129,7 @@ JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointClo
 	return clusters.size();
 
 }
-JNIEXPORT jint JNICALL Java_com_projecttango_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject, jobject pcBuffer) {
 	jbyte *dBuf = (signed char*) env->GetDirectBufferAddress(pcBuffer);
 	signed char e = dBuf[0];
