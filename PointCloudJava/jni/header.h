@@ -39,3 +39,10 @@
 using namespace std;
 using namespace pcl;
 
+typedef pcl::PointXYZRGB PointT;
+
+void
+filterPointCloud(pcl::PointCloud<PointT>::Ptr in, pcl::PointCloud<PointT>::Ptr out);
+
+int
+findClusters(pcl::PointCloud<PointT>::Ptr cloud, std::vector <vector<int> > &clusters);
