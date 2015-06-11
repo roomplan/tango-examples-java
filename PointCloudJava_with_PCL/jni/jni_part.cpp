@@ -92,6 +92,8 @@ extern "C" {
 
 JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(
 		JNIEnv* env, jobject, jobject pcBuffer);
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_saveRotatedPointCloud(
+		JNIEnv* env, jobject, jdoubleArray pose, jstring filename);
 
 JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_getCountPlanesByPCL(
 		JNIEnv* env,jobject, jstring filename);
@@ -127,6 +129,92 @@ JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointClo
 	findClusters(cloud,clusters);
 
 	return clusters.size();
+
+}
+
+JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_saveRotatedPointCloud(JNIEnv* env,jobject, jdoubleArray jpose, jstring filename){
+
+
+	//get the pose
+	double pose[7];
+	jdouble *bodyd = env->GetDoubleArrayElements(jpose, NULL);
+	for (int i = 0; i < 7; i++) {
+		pose[i] = bodyd[i];
+	}
+
+	//TODO: Make these values variable for different devices
+	Eigen::Quaternion<float> imu2Device(0.703, -0.08, -0.08, 0.703);
+	imu2Device.normalize();
+	Eigen::Quaternion<float> imu2Depth(0.002, -0.707, -0.707, -0.002);
+	imu2Depth.normalize();
+
+
+	Eigen::Vector3f shiftIMU2Depth= Eigen::Vector3f(-0.004, 0.062, -0.004);
+	Eigen::Vector3f shiftDev2IMU= Eigen::Vector3f(0.0, 0.0, 0.0);
+
+	float x_tr = (float)pose[0];
+
+	float y_tr = (float)pose[1];
+
+	float z_tr = (float)pose[2];
+
+	Eigen::Vector3f translation = Eigen::Vector3f(x_tr,y_tr, z_tr);
+
+	float x = (float)pose[3];
+	float y = (float)pose[4];
+	float z = (float)pose[5];
+	float w = (float)pose[6];
+
+	Eigen::Quaternion<float> rotationQuatSS2Dev=  Eigen::Quaternion<float>(w, x, y, z);;
+
+
+	Eigen::Matrix3f rotationMatDev2Depth, rotationMatIMU2Depth, rotationMatIMU2Dev, rotationMatSS2Dev;
+
+	//fill translation and rotation data
+	Eigen::Quaternion<float> rotationQuatDev2Depth = rotationQuatSS2Dev * (imu2Device.inverse() * imu2Depth);
+	//convert to matrix
+	rotationMatDev2Depth = rotationQuatDev2Depth.matrix();
+	rotationMatIMU2Dev = imu2Device.matrix();
+	rotationMatSS2Dev = rotationQuatSS2Dev.matrix();
+
+	//rotate shift imu2Depth
+	rotationMatIMU2Depth=imu2Depth.matrix();
+	Eigen::Vector3f rotatedShiftIMU2Depth = (rotationMatIMU2Dev.inverse() *  shiftIMU2Depth);
+
+	//combine to one transformation
+	Eigen::Affine3f transformDepth = Eigen::Affine3f::Identity();
+
+	//final steps
+	transformDepth.translate(translation + rotationMatSS2Dev* shiftDev2IMU + rotationMatSS2Dev * rotationMatIMU2Dev.inverse() * shiftIMU2Depth);
+	transformDepth.rotate(rotationMatDev2Depth);
+
+
+	//Read the cloud from file
+	std::string str;
+	GetJStringContent(env, filename, str);
+	pcl::PointCloud<PointT>::Ptr cloud(new pcl::PointCloud<PointT>());
+
+
+	pcl::PCDReader reader;
+	reader.read(str, *cloud);
+
+	//filter the cloud
+	filterPointCloud(cloud,cloud);
+
+	//transform into SS coordinate frame
+	pcl::transformPointCloud(*cloud, *cloud, transformDepth.matrix());
+
+	//save the cloud to file
+	string cloudName=str;
+	cloudName.replace(cloudName.end()-4,str.end(),"rot.pcd");
+	pcl::PCDWriter writer;
+	writer.write<PointT> (cloudName,*cloud, true);
+
+	//extract planar planar clusters
+	//vector<vector<int> >clusters;
+	//findClusters(cloud,clusters);
+
+	return 0; //clusters.size();
 
 }
 JNIEXPORT jint JNICALL Java_com_tangoproject_experiments_javapointcloud_PointCloudActivity_greetingsFromPCL(

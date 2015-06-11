@@ -27,7 +27,6 @@ import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -45,6 +44,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -121,6 +121,11 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 
 	private Semaphore mutex_on_mIsRecording;
 	private String mLastPointCloudFilename;
+	private boolean mSavePointClouds = false;
+	private float mLastRecordedFrameTimeStamp=0;
+	private float mPointCloudRecordFrameDelta=0;
+	private ToggleButton mSaveButton;
+	private Button mClusterButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +145,8 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 		mAverageZTextView = (TextView) findViewById(R.id.averageZ);
 		mFrequencyTextView = (TextView) findViewById(R.id.frameDelta);
 
+		mSaveButton = (ToggleButton)findViewById(R.id.pclSavePointCloud);
+		mClusterButton = (Button) findViewById(R.id.pclClusterButton);
 		mFirstPersonButton = (Button) findViewById(R.id.first_person_button);
 		mFirstPersonButton.setOnClickListener(this);
 		mThirdPersonButton = (Button) findViewById(R.id.third_person_button);
@@ -178,6 +185,15 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 		    public void onClick(View v) {
 		    	Intent intent = new Intent(Intent.ACTION_VIEW, 
 					     Uri.parse("http://www.roomplan.de/getting-started-pcl-android/"));
+					startActivity(intent);
+		    }
+		});
+		ImageView pImg = (ImageView) findViewById(R.id.pclImageView);
+		pImg.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(Intent.ACTION_VIEW, 
+					     Uri.parse("http://pointclouds.org/"));
 					startActivity(intent);
 		    }
 		});
@@ -315,6 +331,8 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 		// Listen for new Tango data
 		mTango.connectListener(framePairs, new OnTangoUpdateListener() {
 
+			
+
 			@Override
 			public void onPoseAvailable(final TangoPoseData pose) {
 				// Make sure to have atomic access to Tango Pose Data so that
@@ -353,6 +371,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 					mCurrentTimeStamp = (float) xyzIj.timestamp;
 					mPointCloudFrameDelta = (mCurrentTimeStamp - mXyIjPreviousTimeStamp)
 							* SECS_TO_MILLISECS;
+					mPointCloudRecordFrameDelta = (mCurrentTimeStamp - mLastRecordedFrameTimeStamp) * SECS_TO_MILLISECS;
 					mXyIjPreviousTimeStamp = mCurrentTimeStamp;
 					try {
 						TangoPoseData pointCloudPose = mTango.getPoseAtTime(
@@ -363,10 +382,18 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 						}
 						if ((pointCloudPose.statusCode == TangoPoseData.POSE_VALID)) {
 							if (mTimeToTakePointCloud) {
-								mTimeToTakePointCloud = false;
+								
 								writeCloudAndPoseToFile(xyzIj, pointCloudPose,
 										mNumPoseCount);
 							}
+							if (mSavePointClouds && (mPointCloudRecordFrameDelta>500)) {
+								
+								mLastRecordedFrameTimeStamp=mCurrentTimeStamp;
+								writeCloudAndPoseToFile(xyzIj, pointCloudPose,
+										mNumPoseCount);
+							}
+							
+							
 						}
 
 						mRenderer.getPointCloud().UpdatePoints(xyzIj.xyz);
@@ -437,14 +464,22 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 			protected void onPostExecute(Boolean done) {
 				
 				if (done) {
+					if (mSavePointClouds){
+						double[] cpose = { pointCloudPoseSS2Dev.translation[0], pointCloudPoseSS2Dev.translation[1], pointCloudPoseSS2Dev.translation[2], pointCloudPoseSS2Dev.rotation[0],
+								pointCloudPoseSS2Dev.rotation[1], pointCloudPoseSS2Dev.rotation[2], pointCloudPoseSS2Dev.rotation[3] };						
+						
+						saveRotatedPointCloud(cpose, SaveDir + mLastPointCloudFilename);
+					}if (mTimeToTakePointCloud){
+						mTimeToTakePointCloud = false;
+						int numberPlanes = getCountPlanesByPCL(SaveDir+mLastPointCloudFilename);
+						Log.d("Test", SaveDir + mLastPointCloudFilename);
+					
+						String result=getResources().getString(R.string.found_cluster)+" "+Integer.toString(numberPlanes)+" cluster";
 
-					int numberPlanes = getCountPlanesByPCL(SaveDir+mLastPointCloudFilename);
-					Log.d("Test", SaveDir + mLastPointCloudFilename);
-				
-					String result=getResources().getString(R.string.found_cluster)+" "+Integer.toString(numberPlanes)+" cluster";
-
-					Toast.makeText(getApplicationContext(), result,
-							Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), result,
+								Toast.LENGTH_SHORT).show();
+					}
+					
 
 				} else {
 					Toast.makeText(getApplicationContext(),
@@ -676,15 +711,22 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 	}
 
 	public void onPCLBtnClicked(View v) {
-		if (v.getId() == R.id.pclButton) {
+		if (v.getId() == R.id.pclClusterButton) {
 			mTimeToTakePointCloud=true;
+		}
+	}
+	public void onPCLSavePointCloudClicked(View v){
+		if (v.getId() == R.id.pclSavePointCloud) {
+			mSavePointClouds = mSaveButton.isChecked();
+			mClusterButton.setEnabled(!mSaveButton.isChecked());
 		}
 	}
 
 	static {
 		System.loadLibrary("pcl_lib");
 	}
-
 	public native int greetingsFromPCL();
+	public native int saveRotatedPointCloud(double[] pose, String filename);
 	public native int getCountPlanesByPCL(String filename);
+	
 }

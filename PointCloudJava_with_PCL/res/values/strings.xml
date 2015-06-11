@@ -31,6 +31,9 @@
     <string name="first_person">First</string>
     <string name="third_person">Third</string>
     <string name="top_down">Top</string>
+    <string name="find_clusters">Find Clusters by PCL</string>
+    <string name="save_rotated_pointclouds">stop saving rotated Pointclouds</string>
+    <string name="not_save_rotated_pointclouds">save rotated Pointclouds</string>
     <string name="start">Start</string>
     <string name="autoreseton">Auto Reset On</string>
     <string name="autoresetoff">Auto Reset Off</string>
