@@ -673,6 +673,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 											.toString(count));
 									mDeltaTextView.setText(threeDec
 											.format(mDeltaTime));
+									
 									if (mPose.statusCode == TangoPoseData.POSE_VALID) {
 										mPoseStatusTextView
 												.setText(R.string.pose_valid);
@@ -695,6 +696,7 @@ public class PointCloudActivity extends Activity implements OnClickListener {
 									mFrequencyTextView.setText(""
 											+ threeDec
 													.format(mPointCloudFrameDelta));
+									mFrequencyTextView.append("\nNumber clouds: "+Integer.toString(mNumPoseCount));
 									mAverageZTextView.setText(""
 											+ threeDec.format(mRenderer
 													.getPointCloud()
